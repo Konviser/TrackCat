@@ -2,43 +2,57 @@
 
 	'use strict';
 
+	
 	function define_gbcountdown() {
 		var GBCountdown = {};
-		GBCountdown.end = new Date("03/08/2015 22:00:00");
+		GBCountdown.end = new Date();
 		GBCountdown._second = 1000;
 		GBCountdown._minute = GBCountdown._second * 60;
 		GBCountdown._hour = GBCountdown._minute * 60;
 		GBCountdown._day = GBCountdown._hour * 24;
 
-		GBCountdown.startUpdating = function() {
-			GBCountdown.timer = setInterval(GBCountdown.updateRemaining, 1000);
+		//let's get the ref to the element and use it later
+		var element = document.getElementById("gbCountdown")
+
+		GBCountdown.runCountdown = function() {
+			this.timer = setInterval(this.updateRemaining.bind(this), 1000);
+		}
+
+		GBCountdown.fromDistance = function(distance, firstInterval, secondInterval) {
+			return secondDivider? Math.floor((distance % firstInterval) / secondInterval) : Math.floor(distance / firstInterval)
 		}
 
 		GBCountdown.stopUpdating = function() {
-			clearInterval(GBCountdown.timer);
+			clearInterval(this.timer);
+		}
+
+
+		GBCountdown.postDeadline = function() {
+			//comment this line to get rid of the alert
+			window.alert('DEADLINE PASSED! hint: tweak countdown.js to get rid of this alert');
 		}
 
 		GBCountdown.updateRemaining = function() {
 
 			var now = new Date();
-
-			var distance = GBCountdown.end - now;
+			var distance = this.end - now;
 
 			if (distance < 0) {
-				GBCountdown.stopUpdating();
-				document.getElementById("gbCountdown").innerHTML = "DEADLINE PASSED!";
+				this.stopUpdating();
+				setInterval(this.postDeadline, 1000);
+				element.innerHTML = "DEADLINE PASSED!";
 				return;
 			}
 
-			var days = Math.floor(distance / GBCountdown._day);
-			var hours = Math.floor((distance % GBCountdown._day) / GBCountdown._hour);
-			var minutes = Math.floor((distance % GBCountdown._hour) / GBCountdown._minute);
-			var seconds = Math.floor((distance % GBCountdown._minute) / GBCountdown._second);
+			var days = this.fromDistance(distance, this._day);
+			var hours = this.fromDistance(distance, this._day, this._hour);
+			var minutes = this.fromDistance(distance, this._hour, this._minute);
+			var seconds = this.fromDistance(distance, this._minute, this._second);
 
-			document.getElementById("gbCountdown").innerHTML = "Deadline: " + days + "days ";
-			document.getElementById("gbCountdown").innerHTML += hours + "hrs ";
-			document.getElementById("gbCountdown").innerHTML += minutes + "mins ";
-			document.getElementById("gbCountdown").innerHTML += seconds + "secs";
+			element.innerHTML = "Deadline: " + days + "days ";
+			element.innerHTML += hours + "hrs ";
+			element.innerHTML += minutes + "mins ";
+			element.innerHTML += seconds + "secs";
 		}
 
 		return GBCountdown;
@@ -50,6 +64,6 @@
 		console.log("GBCountdown already defined.");
 	}
 
-	GBCountdown.startUpdating();
+	GBCountdown.runCountdown();
 
 })(window);

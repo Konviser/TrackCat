@@ -5,7 +5,7 @@
 	
 	function define_gbcountdown() {
 		var GBCountdown = {};
-		GBCountdown.end = new Date();
+		GBCountdown.end = new Date("03/08/2015 22:00:00");
 		GBCountdown._second = 1000;
 		GBCountdown._minute = GBCountdown._second * 60;
 		GBCountdown._hour = GBCountdown._minute * 60;
@@ -19,7 +19,7 @@
 		}
 
 		GBCountdown.fromDistance = function(distance, firstInterval, secondInterval) {
-			return secondDivider? Math.floor((distance % firstInterval) / secondInterval) : Math.floor(distance / firstInterval)
+			return secondInterval? Math.floor((distance % firstInterval) / secondInterval) : Math.floor(distance / firstInterval)
 		}
 
 		GBCountdown.stopUpdating = function() {
